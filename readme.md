@@ -1,8 +1,8 @@
-# [Laravel-Tricks](http://www.laravel-tricks.com)
+# [JEA-JOBS](http://www.jea.org.jo/jeajobs.org.jo/public/)
 
-Laravel Tricks is a website created by [Stidges](https://twitter.com/stidges) and [Maksim Surguy](http://twitter.com/msurguy) as an unofficial repository of tips and tricks for web developers using the [Laravel](http://laravel.com) PHP framework.
+Laravel Tricks is a website created by [Mohammad](https://twitter.com/mt_younis) an unofficial repository of tips and tricks for web developers using the [Laravel](http://laravel.com) PHP framework.
 
-To see what this is about check out <http://www.laravel-tricks.com>!
+To see what this is about check out <http://www.jea.org.jo/jeajobs.org.jo/public/>!
 
 ## Table of contents
 
@@ -18,11 +18,11 @@ To see what this is about check out <http://www.laravel-tricks.com>!
 
 The purpose of this repository is to provide a source of a real website that's using the Laravel PHP Framework and implements good design patterns for its architecture.
 
-The features of [Laravel-Tricks](http://www.laravel-tricks.com) are:
+The features of [JEA-JOBS](http://www.jea.org.jo/jeajobs.org.jo/public/) are:
 
 - Multi User platform that enables registered users to post short excerpts of code and descriptions to go along with the code.
 - Sorting and search.
-- Categories and tags for each user submitted entry.
+- Jobs and Details for each user submitted entry.
 - OAuth 2 Github Registration and Login using [OAuth 2 client from PHP League](https://github.com/thephpleague/oauth2-client).
 - Disqus integration for commenting.
 - Customized [Bootstrap](http://getbootstrap.com) theme.
@@ -35,7 +35,7 @@ The features of [Laravel-Tricks](http://www.laravel-tricks.com) are:
 
 ## Requirements
 
-The Laravel-Tricks website requires a server with PHP 5.4+ that has the MCrypt extension installed.
+The JEA-JOBS website requires a server with PHP 5.4+ that has the MCrypt extension installed.
 
 The database engine that is used to store data for this application could be any of the engines supported by Laravel: MySQL, Postgres, SQLite and SQL Server.
 
@@ -94,19 +94,11 @@ The `app/Tricks` directory is structured in the following manner:
   - **Social**: Contains the social integration classes for Github and Disqus. The Github class is used for the Github login and registration process. The Disqus class is used to get the comment count for the tricks.
   - **Upload**: Contains the ImageUploadService class. This class handles the uploading and resizing of an avatar.
 
-### Standards
-The Laravel-Tricks application is [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md) compliant (and PSR-0 and PSR-1, which PSR-2 extends).
-PSR-2 is a coding standard by PHP-FIG which aims to unify the way PHP code gets written, so that everyone collaborating on a project will adhere to the same standards. This makes the code easier to read and understand.
+
 
 ## Contributing
 
 Contributions to this repository are more than welcome although not all suggestions will be accepted and merged with the live site.
-
-## Community
-
-Keep track of development and Laravel-Tricks news.
-
-- Follow [@laraveltricks on Twitter](http://twitter.com/laraveltricks).
 
 
 ## Authors
@@ -118,8 +110,8 @@ Keep track of development and Laravel-Tricks news.
 
 **Maksim Surguy**
 
-- <http://twitter.com/msurguy>
-- <http://github.com/msurguy>
+- <https://twitter.com/mt_younis>
+- <https://github.com/MohammadTYounis>
 
 ## Copyright and license
 
