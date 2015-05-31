@@ -1,0 +1,70 @@
+<div class="navbar navbar-default navbar-static-top">
+	<div class="container ">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".header-collapse">
+				<span class="sr-only"><?php echo trans('partials.toggle_navigation'); ?></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+
+			<a class="navbar-brand" href="<?php echo url('/'); ?>">
+				<img width="230" height="60" src="<?php echo asset('img/logo@2x.1.png'); ?>">
+			</a>
+		</div>
+
+		<div class="collapse navbar-collapse header-collapse">
+			<ul class="nav navbar-nav">
+
+				<?php echo Navigation::make(Request::path()); ?>
+
+				<?php if(Auth::guest()): ?>
+					<li class="visible-xs"><a href="<?php echo url('register'); ?>"><?php echo trans('partials.register'); ?></a></li>
+					<li class="visible-xs"><a href="<?php echo url('login'); ?>"><?php echo trans('partials.login'); ?></a></li>
+				 
+				<?php else: ?>
+					<li class="visible-xs"><a href="<?php echo url('user'); ?>"><?php echo trans('partials.my_profile'); ?></a></li>
+					<li class="visible-xs"><a href="<?php echo url('logout'); ?>"><?php echo trans('partials.logout'); ?></a></li>
+				<?php endif; ?>
+
+			</ul>
+
+			<div class="navbar-right hidden-xs">
+				<?php if(Auth::guest()): ?>
+					<a href="<?php echo url('register'); ?>" class="btn btn-primary"><?php echo trans('partials.register'); ?></a>
+					<a href="<?php echo url('login'); ?>" class="btn btn-primary"><?php echo trans('partials.login'); ?></a>
+				<?php else: ?>
+				<ul class="nav">
+					<li class="dropdown <?php echo ( Request::segment(2) == 'settings' || Request::segment(2)=='favorites' ? 'active' : false ); ?>">
+					  <a href="#" class="dropdown-toggle btn btn-primary" data-toggle="dropdown">
+					  <img src="<?php echo Auth::user()->photocss; ?>" width="26px" class="user-avatar-mini"> <?php echo trans('partials.profile'); ?>
+					  <b class="caret"></b>
+					  </a>
+					  <ul class="dropdown-menu">
+                
+                <?php if (\Auth::user()->user_cat == 3 ): ?>
+				  	<li class="<?php echo ( Request::segment('1') == 'user' && Request::segment('2') == '' ? 'active' : false ); ?>"><a href="<?php echo url('admin/users/jobseeker'); ?>"><?php echo trans('partials.my_job_seekers'); ?></a></li>
+				  	<li class="<?php echo ( Request::segment('1') == 'user' && Request::segment('2') == '' ? 'active' : false ); ?>"><a href="<?php echo url('admin/users/jobopp'); ?>"><?php echo trans('partials.my_job_opp'); ?></a></li>
+				    	<li class="<?php echo ( Request::segment('1') == 'user' && Request::segment('2') == '' ? 'active' : false ); ?>"><a href="<?php echo url('user'); ?>"><?php echo trans('partials.my_tricks'); ?></a></li>
+				    	 <li class="<?php echo ( Request::segment('2') == 'settings' ? 'active' : false ); ?>"><a href="<?php echo url('user/settings'); ?>"><?php echo trans('partials.settings'); ?></a></li>
+				<?php endif; ?>
+
+                <?php if (\Auth::user()->user_cat == 2 ): ?>
+				  	<li class="<?php echo ( Request::segment('1') == 'user' && Request::segment('2') == '' ? 'active' : false ); ?>"><a href="<?php echo url('user'); ?>"><?php echo trans('partials.my_tricks'); ?></a></li>
+				<?php endif; ?>	    
+					   <?php if (\Auth::user()->user_cat == 1 ): ?>	
+					    <li class="<?php echo ( Request::segment('2') == 'favorites' ? 'active' : false ); ?>"><a href="<?php echo url('user/favorites'); ?>"><?php echo trans('partials.my_favorites'); ?></a></li>
+					   <?php endif; ?> 
+				   <?php if (\Auth::user()->user_cat == 2): ?>	    
+					    <li class="<?php echo ( Request::segment('2') == 'settings' ? 'active' : false ); ?>"><a href="<?php echo url('user/settings'); ?>"><?php echo trans('partials.settings'); ?></a></li>
+				   <?php endif; ?>
+					    <li><a href="<?php echo url('logout'); ?>"><?php echo trans('partials.logout'); ?></a></li>
+					  </ul>
+					</li>
+				</ul>
+				<?php endif; ?>
+			</div>
+		</div>
+
+	</div>
+</div>

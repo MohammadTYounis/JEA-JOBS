@@ -1,0 +1,58 @@
+<div href="#" class="trick-card col-lg-4 col-md-6 col-sm-6 col-xs-12">
+
+	<div class="trick-card-inner js-goto-trick" data-slug="<?php echo $trick->slug; ?>">
+		  
+                        
+		 <a class="trick-card-title" href="<?php echo route('tricks.show', [ $trick->slug ]); ?>">
+	 	<img class="img-responsive img-rounded" src="<?php echo $trick->user->photocss; ?>" height="48" width="48" border="1" ismap> &nbsp;&nbsp;<?php echo e($trick->title); ?>
+		</a> 
+
+		<div class="trick-card-stats trick-card-by">تم الاعلان من قبل :  <b><a href="<?php echo route('user.profile', $trick->user->username); ?>">
+
+                              <?php if (($trick->user->flag_name == 0)): ?>
+                                <?php echo $trick->user->companyname; ?>
+                               <?php else: ?>
+                                إسم الشركة غير معلن
+                                <?php endif; ?>
+	</a></b></div>
+		<div class="trick-card-stats clearfix">
+			<?php
+$date = new DateTime($trick->created_at);
+ 
+?>
+			<div class="trick-card-timeago">  <?php echo trans('tricks.submitted', array('timeago' => $date->format('Y-m-d') , 'categories' => $trick->categories)); ?> </div>
+			<div class="trick-card-stat-block"><span class="fa fa-eye"></span> <?php echo $trick->view_cache; ?></div>
+			<div class="trick-card-stat-block text-center"></span> <a href="<?php echo url('tricks/'.$trick->slug.'#disqus_thread'); ?>" data-disqus-identifier="<?php echo $trick->id; ?>" style="color: #777;">
+ 
+<?php
+    if(!empty(Auth::user()->id)) {
+    $useAuth = Auth::user()->id;
+
+?>
+  
+ 
+ 
+<?php if ((  $useAuth== $trick->user_id )): ?>
+   <?php if( $trick->trick_status == 1): ?>
+        إنتظار الموافقة
+    <?php elseif ( $trick->trick_status == 2): ?>
+     الطلب فعال
+    <?php elseif ( $trick->trick_status == 3): ?>
+     الطلب مرفوض
+    <?php elseif ( $trick->trick_status == 4): ?>
+      منتهي الصلاحية
+  <?php endif; ?>
+<?php endif; ?>       
+		<?php
+}
+		?>	</a></div>
+			<div class="trick-card-stat-block text-right"><span class="fa fa-pencil"></span> <?php echo $trick->vote_cache; ?></div>
+		</div>
+		<div class="trick-card-tags clearfix">
+			<?php foreach($trick->tags as $tag): ?>
+			    <a href="<?php echo url('tags/'.$tag->slug); ?>" class="tag" title="<?php echo $tag->name; ?>"><?php echo $tag->name; ?></a>
+			<?php endforeach; ?>
+		</div>
+	</div>
+</div>
+

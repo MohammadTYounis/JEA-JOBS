@@ -1,0 +1,491 @@
+<?php $__env->startSection('title', trans('cv.trick')); ?>
+
+<?php $__env->startSection('styles'); ?>
+<link rel="stylesheet" href="<?php echo URL::asset('css/jquery.Jcrop.min.1.css'); ?>">
+<link href="<?php echo URL::asset('css/jquery-ui.css'); ?>" rel="stylesheet" type="text/css"/>
+<link rel="shortcut icon" href="img/jea_logo.ico" type="image/x-icon" />
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('scripts'); ?>
+<script type="text/javascript">
+  var FileAPI = {
+          debug: false
+          , staticPath: "<?php echo url('js/vendor/uploader'); ?>/"
+          , postNameConcat: function (name, idx){
+        return  name + (idx != null ? '['+ idx +']' : '');
+      }
+  };
+</script>
+<script src="<?php echo asset('js/vendor/uploader/FileAPI.min.js'); ?>"></script>
+<script src="<?php echo asset('js/vendor/uploader/FileAPI.exif.js'); ?>"></script>
+<script src="<?php echo asset('js/vendor/uploader/jquery.fileapi.js'); ?>"></script>
+<script src="<?php echo asset('js/vendor/uploader/jquery.Jcrop.min.js'); ?>"></script>
+ 
+<script src="<?php echo asset('js/jquery-ui.js'); ?>"></script>
+  
+  <script>
+  $(document).ready(function() {
+    $("#datepicker").datepicker();
+    $("#datepicker2").datepicker();
+  });
+  </script>
+<script type="text/javascript">
+jQuery(function ($){
+  $('#cropper-preview').on('click', '.js-upload', function (){
+     $('#upload-avatar').fileapi('upload');
+     $('#cropper-preview').fadeOut();
+  });
+  $('#upload-avatar').fileapi({
+     url: '<?php echo route("user.avatar"); ?>',
+     accept: 'image/*',
+     data: { _token: "<?php echo csrf_token(); ?>" },
+     imageSize: { minWidth: 100, minHeight: 100 },
+     elements: {
+        active: { show: '.js-upload', hide: '.js-browse' },
+        preview: {
+           el: '.js-preview',
+           width: 96,
+           height: 96
+        },
+        progress: '.js-progress'
+     },
+     onSelect: function (evt, ui){
+        var file = ui.all[0];
+        if( file ){
+          $('#cropper-preview').show();
+
+          $('.js-img').cropper({
+             file: file,
+             bgColor: '#fff',
+             maxSize: [$('#cropper-preview').width()-40, $(window).height()-100],
+             minSize: [100, 100],
+             selection: '90%',
+             aspectRatio: 1,
+             onSelect: function (coords){
+                $('#upload-avatar').fileapi('crop', file, coords);
+             }
+          });
+        }
+     },
+
+    onComplete: function(evt, xhr)
+     {
+      try {
+        var result = FileAPI.parseJSON(xhr.xhr.responseText);
+        $('#avatar-hidden').attr("value",result.images.filename);
+      } catch (er){
+        FileAPI.log('PARSE ERROR:', er.message);
+      }
+     }
+  });
+});
+function fillcv_exp(x){
+  
+    document.getElementById("ser2").value = x;
+}
+</script>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
+
+	<div class="container">
+		<div class="row">
+
+			<div class="col-lg-8 col-lg-push-2 col-md-8 col-md-push-2 col-sm-12 col-xs-12 text-right">
+				<div class="content-box">
+					
+           
+           
+      <h1 class="page-title"><?php echo trans('cv.creating_new_trick'); ?></h1>
+        
+     
+					<?php if(Session::get('errors')): ?>
+					    <div class="alert alert-danger alert-dismissable">
+					        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+					         <h5><?php echo trans('cv.errors_while_creating'); ?></h5>
+					         <?php foreach($errors->all('<li>:message</li>') as $message): ?>
+					            <?php echo $message; ?>
+					         <?php endforeach; ?>
+					    </div>
+					<?php endif; ?>
+
+				<ul class="nav nav-pills" role="tablist">
+  <li class="active btn-danger"><a href="#home" role="tab" data-toggle="tab">البيانات الشخصية</a></li>
+  <li><a href="#profile" role="tab" data-toggle="tab">الخبرات و الدورات</a></li>
+  <li><a href="#settings" role="tab" data-toggle="tab">إرفاق السيرة الذاتية</a></li>
+</ul>
+        
+<div class="tab-content">
+  <div class="tab-pane active" id="home">
+   
+   <?php echo Form::open(array('class'=>'form-vertical','id'=>'save-cv-form1','role'=>'form')); ?>
+      
+      <fieldset>
+					     <div class="form-group">
+
+                <br>
+               </div> 
+
+               <div class="col-md-7">
+     <div id="cropper-preview" style="display:none;">
+       <div class="panel panel-info">
+         <div class="panel-heading">
+           <h3 class="panel-title"><?php echo trans('cv.crop_picture'); ?></h3>
+         </div>
+         <div class="panel-body">
+           <div class="js-img"></div>
+           <p>
+             <div class="js-upload btn btn-primary"><?php echo trans('cv.upload'); ?></div>
+           </p>
+         </div>
+       </div>
+     </div>
+    </div>
+           
+<div class="form-group" >
+   
+              <label for="avatar" class="col-lg-6 control-label"><?php echo trans('cv.profile_picture'); ?></label>
+              <div class="col-lg-4">
+                <input type="hidden" id="avatar-hidden" name="avatar" value="">
+                <div id="upload-avatar" class="upload-avatar">
+                  <div class="userpic" style="background-image: url('<?php echo e(Auth::user()->photocss); ?>');">
+                     <div class="js-preview userpic__preview"></div>
+                  </div>
+                  <div class="btn btn-sm btn-primary js-fileapi-wrapper">
+                     <div class="js-browse">
+                        <span class="btn-txt"><?php echo trans('cv.choose'); ?></span>
+                        <input type="file" name="filedata">
+                     </div>
+                     <div class="js-upload" style="display: none;">
+                        <div class="progress progress-success"><div class="js-progress bar"></div></div>
+                        <span class="btn-txt"><?php echo trans('cv.uploading'); ?></span>
+                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+         
+              <div class="form-group">
+
+                <br>
+               </div>
+               <div class="form-group">
+                <label for="username" class="col-lg-4 control-label"> <?php echo trans('cv.username'); ?> </label>
+                <div class="col-lg-6">
+               <input type="text" disabled class="form-control" id="username" placeholder="<?php echo Auth::user()->username; ?>">
+               <br>
+               </div>
+               </div>   
+              <div class="form-group">
+                <label for="eng_name" class="col-lg-4 control-label"> <?php echo trans('cv.eng_name'); ?> </label>
+               <div class="col-lg-6">  
+               <input type="text" disabled class="form-control" id="companyname" placeholder="<?php echo Auth::user()->companyname; ?>">
+               <br>
+               </div>
+               </div> 
+              
+            <div class="form-group">
+                <label for="birthdate" class="col-lg-4 control-label"> <?php echo trans('cv.birthdate'); ?></label>
+                <div class="col-lg-6"> 
+             <input type="text" disabled class="form-control" id="eng_birthdate" placeholder="<?php echo Auth::user()->eng_birthdate; ?>">
+             <br/> 
+              </div> 
+            </div>
+        <br/> 
+            <div class="form-group">
+                <label for="eng_phone" class="col-lg-4 control-label"> <?php echo trans('cv.eng_phone'); ?></label>
+               <div class="col-lg-6" > <?php echo Form::text('cv_eng_phone',Auth::user()->phonenumber, array('class'=>'form-control','placeholder'=>trans('cv.phonenumber'),'required' ));; ?>
+             <br>
+              </div>
+           </div>
+
+           <div class="form-group">
+                <label for="email" class="col-lg-4 control-label"> <?php echo trans('cv.email'); ?> </label>
+              <div class="col-lg-6"> <?php echo Form::email('cv_email',Auth::user()->email, array('class'=>'form-control','placeholder'=>trans('cv.email'),'required' ));; ?>
+              <br>
+              </div>
+               </div>
+		
+<p></p>    
+				 <input type="hidden" name ="flag_save" id="flag_save" value ="user">
+					    <div class="form-group">
+					        <div class="text-right">
+					          <button type="submit"  id="save-section" class="btn label-primary ladda-button" data-style="expand-right">
+					           <strong> <?php echo trans('cv.save_trick'); ?></strong>
+					          </button>
+					        </div>
+					    </div>
+</fieldset>
+					<?php echo Form::close(); ?>
+</div>
+
+ <div class="tab-pane" id="profile">
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="page-header">
+        <h1><?php echo trans('cv.exp_addexp'); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="pull-center"> <a data-toggle="modal" href="#add_category" class="btn btn-primary btn-sm"><?php echo trans('cv.exp_addexp'); ?></a></span></h1>
+      </div>
+
+      <table class="table">
+         <thead>
+           <tr>
+             <th class="col-lg-3 text-center"><?php echo trans('cv.cvtitle'); ?></th>
+             <th class="col-lg-3 text-center"><?php echo trans('cv.cvdescription'); ?> <?php echo trans('cv.cvdesc'); ?></th>
+             
+             <th class="col-lg-3 text-center"><?php echo trans('cv.cvfromdate'); ?></th>
+             
+             <th class="col-lg-3 text-center"><?php echo trans('cv.cvtodate'); ?></th>
+             <th class="col-lg-3 text-center"><?php echo trans('cv.period'); ?></th>
+             <th class="col-lg-2 text-center"><?php echo trans('cv.cvactions'); ?></th>
+           </tr>
+         </thead>
+         <tbody id="sortable">
+         <?php echo Form::open(array('class'=>'form-vertical','id'=>'save-cv-form7','role'=>'form')); ?>    
+         <?php if(!empty($items)): ?>
+          <?php foreach($items as $item): ?>
+          <tr rel="<?php echo $item->ser; ?>">
+              <td class="col-lg-3 text-center"><?php if($item->exp_type==0): ?>
+                              دورة 
+                              <?php else: ?>
+                              خبرة
+                              <?php endif; ?>
+                              <input type="hidden" name ="ser" id="ser" value ="<?php echo ($item->ser); ?>">
+              
+  </td>
+              <td class="col-lg-3 text-center"><?php echo substr(($item->title),1,5); ?> / <?php echo substr(($item->des),1,5); ?></td>
+              
+              <td class="col-lg-3 text-center"><?php echo ($item->from_date); ?></td>
+           
+              <td class="col-lg-3 text-center"><?php echo ($item->to_date); ?></td>
+              <td class="col-lg-3 text-center"><?php echo ($item->period); ?></td>
+              <td class="col-lg-2 text-center">
+                <div class="btn-group pull-center">
+                  <span class="pull-center"> <a data-toggle="modal" onclick="fillcv_exp(<?php echo ($item->ser); ?>)" href="#delete_category" class="delete_toggler btn btn-primary btn-sm" rel="<?php echo $item->ser; ?>"><?php echo trans('cv.exp_delexp'); ?></a></span>
+                  
+                </div>
+             </td>
+           </tr>
+
+ 
+          <?php endforeach; ?>
+          <?php endif; ?>
+          <!-- Modal -->
+ <div class="modal fade" id="delete_category" tabindex="5" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+     <div class="modal-content">
+       <div class="modal-header">
+         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+         <h4 class="modal-title"></h4>
+       </div>
+       <div class="modal-body">
+          <p class="lead text-left"><?php echo trans('cv.category_will_be_deleted'); ?></p>
+       </div>
+        <input type="hidden" name ="ser2" id="ser2" value= >
+         <div class="modal-footer">
+          <input type="hidden" name ="flag_save" id="flag_save" value ="cv_exp_delete">
+          <a data-dismiss="modal" href="" class="btn btn-danger"><?php echo trans('cv.keep'); ?></a>
+          <button type="submit"  id="delete_link" class="btn label-primary ladda-button" data-style="expand-right">
+                     <strong> <?php echo trans('cv.willdelete'); ?></strong>
+                    </button>
+
+
+       </div>
+     </div><!-- /.modal-content -->
+   </div><!-- /.modal-dialog -->
+ </div>
+
+          <?php echo Form::close(); ?>
+          </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+   <div class="modal fade" id="add_category" tabindex="5" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+     <div class="modal-content">
+       <div class="modal-header">
+         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+         <h4 class="modal-title"></h4>
+       </div>
+       <div class="modal-body">
+          <?php if($errors->all()): ?>
+              <div class="bs-callout bs-callout-danger">
+                  <h4><?php echo trans('cv.please_fix_errors'); ?></h4>
+                  <?php echo HTML::ul($errors->all()); ?>
+              </div>
+          <?php endif; ?>
+   <?php echo Form::model('cv_exp',array('class'=>'form-horizontal')); ?>
+           
+           <div class="form-group">
+              <div class="col-lg-5 ">
+              <h4 class="modal-title"><?php echo trans('cv.adding_new_exp'); ?></h4>
+              </div>
+          </div>
+
+
+
+           <div class="form-group">
+              <label for="name" class="col-lg-3 control-label"><?php echo trans('cv.exp_type'); ?></label>
+              <div class="col-lg-2 ">
+                <?php echo Form::select('exp_type',array('-1'=>'يرجى الإختيار','0'=>'الدورات ','1'=>'الخبرات العملية'),'0'); ?>
+              </div>
+          </div>
+
+           <div class="form-group">
+              <label for="name" class="col-lg-3 control-label"><?php echo trans('cv.exp_fdate'); ?></label>
+              <div class="col-lg-4">
+                <?php echo Form::input('text', 'from_date', null, ['class' => 'form-control', 'placeholder' => 'من تاريخ ','pattern'=>'\d{1,2}/\d{1,2}/\d{4}','required','id' =>'datepicker']); ?>
+              </div>
+          </div>
+         
+         <div class="form-group">
+              <label for="name" class="col-lg-3 control-label"><?php echo trans('cv.exp_tdate'); ?></label>
+              <div class="col-lg-4">
+                <?php echo Form::input('text', 'to_date', null, ['class' => 'form-control', 'placeholder' => 'إلى تاريخ','pattern'=>'\d{1,2}/\d{1,2}/\d{4}','required','id' =>'datepicker2']); ?>
+             </div>
+          </div>
+
+   <div class="form-group">
+     <label for="name" class="col-lg-3 control-label"><?php echo trans('cv.tags'); ?></label>
+                <div class="col-lg-4">
+                  <?php echo Form::select('tags', $tagList, null, array('id'=>'tags' ));; ?></p>
+                   
+              </div>
+          </div>
+    
+          <div class="form-group">
+              <label for="name" class="col-lg-2 control-label"><?php echo trans('cv.exp_title'); ?></label>
+              <div class="col-lg-10">
+                <?php echo Form::text('title',null,array('class'=>'form-control','required')); ?>
+              </div>
+          </div>
+            <div class="form-group">
+                <label for="description" class="col-lg-2 control-label"><?php echo trans('cv.exp_desc'); ?></label>
+                <div class="col-lg-10">
+                    <?php echo Form::textarea('desc',null,array('class'=>'form-control','rows'=>'5')); ?>
+                </div>
+            </div>
+          <div class="form-group">    
+        <input type="hidden" name ="flag_save" id="flag_save" value ="cv_exp">
+          <br>
+          </div>
+
+          <div class="form-group">
+                  <div class="text-right">
+                   <button type="submit"  id="save-section" class="btn label-primary ladda-button" data-style="expand-right">
+                     <strong> <?php echo trans('cv.save_exp'); ?></strong>
+                    </button>
+                     
+                  </div>
+              </div>
+              
+          <?php echo Form::close(); ?>
+
+          </div>
+     </div><!-- /.modal-content -->
+   </div><!-- /.modal-dialog -->
+ </div><!-- /.modal -->
+
+ 
+
+ </div>
+ <div class="tab-pane" id="settings">
+ 
+<?php echo Form::open(array('class'=>'form-vertical','id'=>'save-cv-form3','role'=>'form','files'=>'true')); ?>
+      
+             
+               <div class="form-group" >
+                <label for="title" class="col-lg-4 control-label"><?php echo trans('cv.title'); ?></label>
+               <div class="col-lg-6"> <?php echo Form::text('cv_title',isset($cv->cv_title) ? $cv->cv_title : '' , array('class'=>'form-control','placeholder'=>trans('cv.title_placeholder'),'required' ));; ?>
+              <br>
+              </div>
+           </div>
+              
+              <div class="form-group">
+                <label for="description" class="col-lg-4 control-label"><?php echo trans('cv.summary'); ?></label>
+               <div class="col-lg-6"> <?php echo Form::textarea('cv_summary',isset($cv->cv_summary) ? $cv->cv_summary : '', array('class'=>'form-control','placeholder'=>trans('cv.cv_summary_placeholder'),'rows'=>'3','required'));; ?>
+              
+ </div> <br></div>
+        <div class="form-group" >
+          <div class="col-lg-1">
+<br> <br><br> <br>
+          </div>
+        </div>       
+       <div class="form-group">      
+      <label for="exampleInputFile" class="col-lg-4 control-label">أنواع الملفات المتاحة :</label>
+    <div class="col-lg-6"> <input type="text" disabled class="form-control" id="xxx" placeholder=" إمتداد الملفات .doc .pdf  ">
+      </div><br>
+       </div>
+     <div class="form-group" >
+          <div class="col-lg-1">
+<br> <br> 
+          </div>
+        </div> 
+      
+       <div class="form-group">
+      <label for="outputFile" class="col-lg-4 control-label">إرفاق السيرة الذاتية :</label>
+       <div class="col-lg-3">
+        <?php echo Form::file('cv_attachment','',array('id'=>'cv_attachment')); ?>
+         </div>  <br>
+          </div>
+
+          <div class="form-group" >
+          <div class="col-lg-1">
+<br> <br> 
+          </div>
+        </div>  
+        <div class="form-group" >
+          <div class="col-lg-1">
+<br> 
+          </div>
+        </div> 
+         
+          <div></div> 
+<?php if(!empty($cv->cv_attachment)): ?>
+   <div class="form-group">      
+      <div class="col-lg-6 control-label"> 
+      <a href="<?php echo URL::to('img/CV/'.$cv->cv_attachment); ?>" target="_blank" class="btn btn-primary">مشاهدة السيرة الذاتية <?php echo $cv->cv_attachment."/".$cv->updated_at; ?></a>
+     </div> <br> 
+  <?php else: ?>
+  <div class="form-group">      
+      <div class="col-lg-6 control-label"> 
+      لم يتم تحميل ملف السيرة الذاتية
+     </div> <br>
+    <?php endif; ?>  
+</div>
+<div class="container">
+   <div class="form-group">    
+        <input type="hidden" name ="flag_save" id="flag_save" value ="cv">
+          <br>
+          </div>
+</div>
+ 
+        
+          
+                  <div class="form-group">
+                  <div class="text-right">
+                   <button type="submit"   id="save-section" class="btn label-primary ladda-button" data-style="expand-right">
+                     <strong> <?php echo trans('cv.save_cv'); ?></strong>
+                    </button>
+                     
+                  </div>
+              </div>
+
+          <?php echo Form::close(); ?>
+ 
+ </div>
+ 
+				</div>
+			</div>
+		</div>
+	</div>
+  </div>
+</div>
+ 
+<?php $__env->stopSection(); ?>
+

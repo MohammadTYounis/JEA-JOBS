@@ -1,0 +1,76 @@
+<?php $__env->startSection('title', trans('tricks.trick')); ?>
+
+<?php $__env->startSection('styles'); ?>
+	<link rel="stylesheet" href="<?php echo URL::asset('js/selectize/css/selectize.bootstrap3.css'); ?>">
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('scripts'); ?>
+	<script type="text/javascript" src="<?php echo url('js/selectize/js/standalone/selectize.min.1.js'); ?>"></script>
+	<script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js"></script>
+	<script type="text/javascript" src="<?php echo asset('js/trick-new-edit.min.1.js'); ?>"></script>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8 col-lg-push-2 col-md-8 col-md-push-2 col-sm-12 col-xs-12">
+				<div class="content-box">
+					<?php if(Auth::check() && (Auth::user()->id == $trick->user_id)): ?>
+						<div class="pull-right">
+							<a data-toggle="modal" href="#deleteModal"><?php echo trans('tricks.delete'); ?></a>
+							<?php echo $__env->make('tricks.delete',['link'=>$trick->deleteLink], array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+						</div>
+					<?php endif; ?>
+					<h1 class="page-title">
+						<?php echo trans('tricks.editing_trick'); ?>
+					</h1>
+					<?php if(Session::get('errors')): ?>
+					    <div class="alert alert-danger alert-dismissable">
+					        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+					         <h5><?php echo trans('tricks.errors_while_editing'); ?></h5>
+					         <?php foreach($errors->all('<li>:message</li>') as $message): ?>
+					            <?php echo $message; ?>
+					         <?php endforeach; ?>
+					    </div>
+					<?php endif; ?>
+					<?php if(Session::has('success')): ?>
+					    <div class="alert alert-success alert-dismissable">
+					        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+					         <h5><?php echo Session::get('success'); ?></h5>
+					    </div>
+					<?php endif; ?>
+					<?php echo Form::open(array('class'=>'form-vertical','id'=>'save-trick-form','role'=>'form')); ?>
+					    <div class="form-group">
+					    	<label for="title"><?php echo trans('tricks.title'); ?></label>
+					    	<?php echo Form::text('title', $trick->title, array('class'=>'form-control','placeholder'=>trans('tricks.title_placeholder')));; ?>
+					    </div>
+					    <div class="form-group">
+					    	<label for="description"><?php echo trans('tricks.description'); ?></label>
+					    	<?php echo Form::textarea('description',$trick->description, array('class'=>'form-control','placeholder'=>trans('tricks.trick_description_placeholder'),'rows'=>'3'));; ?>
+					    </div>
+					    <div class="form-group">
+					    	<?php echo Form::select('categories[]', $categoryList, $selectedCategories, array('multiple','id'=>'categories','placeholder'=>trans('tricks.categorize_trick_placeholder'),'class' => 'form-control'));; ?>
+					    </div>
+					    <div class="form-group">
+					    	<?php echo Form::select('tags[]', $tagList, $selectedTags, array('multiple','id'=>'tags','placeholder'=>trans('tricks.tag_trick_placeholder'),'class' => 'form-control'));; ?>
+					    </div>
+					    
+					    <div class="form-group">
+					      <label><?php echo trans('tricks.trick_code'); ?></label>
+					      <div id="editor-content" class="content-editor"></div>
+					      <?php echo Form::textarea('code', $trick->code, ['id'=>'code-editor','style'=>'display:none;']);; ?>
+					    </div>
+					    
+					    <div class="form-group">
+					        <div class="text-right">
+					          <button type="submit"  id="save-section" class="btn btn-primary ladda-button" data-style="expand-right">
+					            <?php echo trans('tricks.update_trick'); ?>
+					          </button>
+					        </div>
+					    </div>
+					<?php echo Form::close(); ?>
+				</div>
+			</div>
+		</div>
+	</div>
+<?php $__env->stopSection(); ?>

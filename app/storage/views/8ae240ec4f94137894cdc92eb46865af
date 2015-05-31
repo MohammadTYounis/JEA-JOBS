@@ -1,0 +1,234 @@
+<?php $__env->startSection('title', trans('user.settings')); ?>
+
+<?php $__env->startSection('styles'); ?>
+<link rel="stylesheet" href="<?php echo URL::asset('css/jquery.Jcrop.min.1.css'); ?>">
+
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('scripts'); ?>
+<script type="text/javascript">
+  var FileAPI = {
+          debug: false
+          , staticPath: "<?php echo url('js/vendor/uploader'); ?>/"
+          , postNameConcat: function (name, idx){
+        return  name + (idx != null ? '['+ idx +']' : '');
+      }
+  };
+</script>
+<script src="<?php echo asset('js/vendor/uploader/FileAPI.min.js'); ?>"></script>
+<script src="<?php echo asset('js/vendor/uploader/FileAPI.exif.js'); ?>"></script>
+<script src="<?php echo asset('js/vendor/uploader/jquery.fileapi.js'); ?>"></script>
+<script src="<?php echo asset('js/vendor/uploader/jquery.Jcrop.min.js'); ?>"></script>
+
+<script type="text/javascript">
+jQuery(function ($){
+  $('#cropper-preview').on('click', '.js-upload', function (){
+     $('#upload-avatar').fileapi('upload');
+     $('#cropper-preview').fadeOut();
+  });
+  $('#upload-avatar').fileapi({
+     url: '<?php echo route("user.avatar"); ?>',
+     accept: 'image/*',
+     data: { _token: "<?php echo csrf_token(); ?>" },
+     imageSize: { minWidth: 100, minHeight: 100 },
+     elements: {
+        active: { show: '.js-upload', hide: '.js-browse' },
+        preview: {
+           el: '.js-preview',
+           width: 96,
+           height: 96
+        },
+        progress: '.js-progress'
+     },
+
+     onSelect: function (evt, ui){
+        var file = ui.all[0];
+        if( file ){
+          $('#cropper-preview').show();
+
+          $('.js-img').cropper({
+             file: file,
+             bgColor: '#fff',
+             maxSize: [$('#cropper-preview').width()-40, $(window).height()-100],
+             minSize: [100, 100],
+             selection: '90%',
+             aspectRatio: 1,
+             onSelect: function (coords){
+                $('#upload-avatar').fileapi('crop', file, coords);
+             }
+          });
+        }
+     },
+
+    onComplete: function(evt, xhr)
+     {
+      try {
+        var result = FileAPI.parseJSON(xhr.xhr.responseText);
+        $('#avatar-hidden').attr("value",result.images.filename);
+      } catch (er){
+        FileAPI.log('PARSE ERROR:', er.message);
+      }
+     }
+  });
+});
+</script>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
+<div class="container">
+  <div class="row push-down">
+    <div class="col-lg-8 col-md-6 col-sm-6 col-xs-12">
+      <h1 class="page-title"><?php echo trans('user.user_settings'); ?></h1>
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 text-right">
+      <a href="<?php echo url('user'); ?>" class="btn btn-primary"><?php echo trans('user.back_to_profile'); ?></a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-6 col-lg-push-3 col-md-6 col-md-push-3 col-sm-8 col-sm-push-2 col-xs-12">
+      <div class="content-box">
+
+          <h3 class="content-title"><?php echo trans('user.account_settings'); ?></h3>
+
+
+          <?php if(Session::has('update_password')): ?>
+            <div class="alert alert-info">
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+              <strong><?php echo trans('user.notice'); ?></strong>
+              <p><?php echo trans('user.notice_password'); ?></p>
+            </div>
+          <?php endif; ?>
+          <?php if(Session::has('settings_updated')): ?>
+            <div class="alert alert-success">
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+	      <?php echo trans('user.settings_updated'); ?>              
+            </div>
+          <?php endif; ?>
+          <?php if(Session::get('errors')): ?>
+            <div class="alert alert-danger alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <?php foreach($errors->all('<li>:message</li>') as $message): ?>
+              <?php echo $message; ?>
+            <?php endforeach; ?>
+            </div>
+          <?php endif; ?>
+          <?php echo Form::open(array('role'=>'form','id'=>'loginform','class'=>'form-horizontal')); ?>
+          <fieldset>
+            <div class="form-group">
+              <label for="companyname" class="col-lg-4 control-label"><?php echo trans('user.companyname'); ?></label>
+              <div class="col-lg-8">
+                <?php echo Form::text('companyname', Auth::user()->companyname, array('class'=>'form-control','placeholder'=>'إسم الشركة ...')); ?>
+               </div>
+            </div>
+             <div class="form-group">
+              <label for="phonenumber" class="col-lg-4 control-label"><?php echo trans('user.phonenumber'); ?></label>
+              <div class="col-lg-8">
+                <?php echo Form::text('phonenumber', Auth::user()->phonenumber, array('class'=>'form-control','placeholder'=>'رقم هاتف الشركة ....')); ?>
+              </div>
+              </div>
+              <div class="form-group">
+              <label for="Address" class="col-lg-4 control-label"><?php echo trans('user.Address'); ?></label>
+              <div class="col-lg-8">
+                <?php echo Form::text('Address', Auth::user()->Address, array('class'=>'form-control','placeholder'=>'عنوان الشركة ...')); ?>
+               </div>
+               </div>
+               
+             <div class="form-group">
+               <label for="flag_name" class="col-lg-4 control-label"><?php echo trans('home.flag_name'); ?></label>
+                 <div class="col-lg-8">
+                <?php if(Auth::user()->flag_name==1): ?>
+                نعم : <?php echo Form::radio('flag_name',1,true)."  "; ?> 
+                لا : <?php echo Form::radio('flag_name',0)."  "; ?> 
+                 <?php else: ?>
+                  نعم : <?php echo Form::radio('flag_name',1)."  "; ?> 
+                لا : <?php echo Form::radio('flag_name',0,true)."  "; ?> 
+                
+                 <?php endif; ?>
+               </div>
+              </div>
+             <div class="form-group <?php echo Session::get('username_required')? 'has-error': ''; ?>">
+              <label for="username" class="col-lg-4 control-label"><?php echo trans('user.username'); ?></label>
+              <div class="col-lg-8">
+                <?php echo Form::text('username', Auth::user()->username, array('class'=>'form-control','placeholder'=>'إسم المستخدم ...')); ?>
+                <?php if(Session::get('username_required')): ?>
+                  <span class="help-block"><?php echo trans('user.github_user_already_taken'); ?></span>
+                <?php endif; ?>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="email" class="col-lg-4 control-label"><?php echo trans('user.email'); ?></label>
+              <div class="col-lg-8">
+                <input type="email" disabled class="form-control" id="email" placeholder="<?php echo Auth::user()->email; ?>">
+              </div>
+            </div>
+          -
+   <div class="col-md-7">
+     <div id="cropper-preview" style="display:none;">
+       <div class="panel panel-info">
+         <div class="panel-heading">
+           <h3 class="panel-title"><?php echo trans('user.crop_picture'); ?></h3>
+         </div>
+         <div class="panel-body">
+           <div class="js-img"></div>
+           <p>
+             <div class="js-upload btn btn-primary"><?php echo trans('user.upload'); ?></div>
+           </p>
+         </div>
+       </div>
+     </div>
+    </div>
+            <div class="form-group">
+              <label for="avatar" class="col-lg-4 control-label"><?php echo trans('user.profile_picture'); ?></label>
+              <div class="col-lg-8">
+                <input type="hidden" id="avatar-hidden" name="avatar" value="">
+                <div id="upload-avatar" class="upload-avatar">
+                  <div class="userpic" style="background-image: url('<?php echo e(Auth::user()->photocss); ?>');">
+                     <div class="js-preview userpic__preview"></div>
+                  </div>
+                  <div class="btn btn-sm btn-primary js-fileapi-wrapper">
+                     <div class="js-browse">
+                        <span class="btn-txt"><?php echo trans('user.choose'); ?></span>
+                        <input type="file" name="filedata">
+                     </div>
+                     <div class="js-upload" style="display: none;">
+                        <div class="progress progress-success"><div class="js-progress bar"></div></div>
+                        <span class="btn-txt"><?php echo trans('user.uploading'); ?></span>
+                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="password" class="col-lg-4 control-label"><?php echo trans('user.password'); ?></label>
+              <div class="col-lg-8">
+                <?php echo Form::password('password', array('class'=>'form-control','placeholder'=> trans('user.new_password'))); ?>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="password_confirmation" class="col-lg-4 control-label"><?php echo trans('user.confirm_password'); ?></label>
+              <div class="col-lg-8">
+                <?php echo Form::password('password_confirmation', array('class'=>'form-control','placeholder'=>trans('user.confirm_password'))); ?>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-lg-offset-7 col-lg-12">
+                <input class="btn btn-sm" type="reset" value="<?php echo trans('user.reset_form'); ?>">
+                <input class="btn btn-primary" type="submit" value="<?php echo trans('user.update'); ?>">
+              </div>
+             </div>
+          </fieldset>
+          <?php echo Form::close(); ?>
+      </div>
+    </div>
+
+ 
+
+
+    
+          
+
+  </div>
+</div>
+<?php $__env->stopSection(); ?>

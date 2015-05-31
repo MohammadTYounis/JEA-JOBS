@@ -1,0 +1,8 @@
+<div id="footer">
+  <div class="container">
+    <p class="text-muted credit"><?php echo trans('partials.credits'); ?> | <a href="<?php echo url('about'); ?>"><?php echo trans('partials.about'); ?></a>
+    <span class="pull-right"><?php echo trans('partials.footer_links'); ?></span>
+    </p>
+
+  </div>
+</div>

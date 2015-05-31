@@ -1,0 +1,59 @@
+<?php $__env->startSection('title', trans('admin.viewing_users')); ?>
+
+<?php $__env->startSection('content'); ?>
+<div class="container">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="page-header">
+				<h1><?php echo trans('admin.job_seeker'); ?></h1>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-12">
+			<table class="table">
+			   	<thead>
+			    	<tr>
+				     	<th><?php echo trans('admin.engavatar'); ?></th>
+						<th><?php echo trans('admin.engname'); ?></th>
+						<th><?php echo trans('admin.engkey'); ?></th>
+						<th><?php echo trans('admin.email'); ?></th>
+						<th><?php echo trans('admin.companyphone'); ?></th>
+						<th><?php echo trans('admin.sex'); ?></th>
+						<th><?php echo trans('admin.engage'); ?></th>
+						<th><?php echo trans('admin.engcv'); ?></th>
+			    	</tr>
+			   	</thead>
+			   	<tbody>
+			   		
+				  	<?php foreach($users as $user): ?>
+				    <form name="myform" id="myform">
+				     <tr>
+				    	<td><img src="#" class="img-rounded" style="width:40px; height:40px;"></td>
+				        <td><?php echo $user->companyname; ?></td>
+				       	<td><?php echo $user->username; ?></td>
+				       	<td><?php echo $user->email; ?></td>
+				       	<td><?php echo $user->phonenumber; ?></td>
+				       	<td><?php echo $user->GENDER; ?></td>
+				       	<td> 
+ 
+				       		<?php echo date_diff(date_create($user->eng_birthdate), date_create('today'))->y; ?></td>
+				       	<td> <?php if (file_exists(public_path('img/CV/CV_'.$user->id))): ?>
+				       		 <a href="<?php echo URL::to('img/CV/'."CV_".$user->id); ?>" target="_blank" class="btn btn-primary">مشاهدة السيرة الذاتية </a>
+				       	    <?php else: ?>
+                              السيرة الذاتية غير مرفقة
+				       	    <?php endif; ?> </td>
+				     </tr></form>
+				    <?php endforeach; ?>
+
+			    </tbody>
+			</table>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="text-center"> </div>
+		</div>
+	</div>
+</div>
+<?php $__env->stopSection(); ?>

@@ -1,0 +1,41 @@
+<div class="row js-trick-container">
+	<?php if($tricks->count()): ?>
+		<?php foreach($tricks as $trick): ?>
+			<?php echo $__env->make('tricks.card', [ 'trick' => $trick ], array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+		<?php endforeach; ?>
+	<?php else: ?>
+		<div class="col-lg-12">
+			<div class="alert alert-danger">
+				<?php echo trans('tricks.no_tricks_found'); ?>				
+			</div>
+		</div>
+	<?php endif; ?>
+</div>
+<?php if($tricks->count()): ?>
+	<div class="row">
+	    <div class="col-md-12 text-center">
+	    	<?php if(isset($appends)): ?>
+	        	<?php echo $tricks->appends($appends)->links();; ?>
+	        <?php else: ?>
+				<?php echo $tricks->links();; ?>
+	        <?php endif; ?>
+	    </div>
+	</div>
+<?php endif; ?>
+
+<?php $__env->startSection('scripts'); ?>
+	<?php if(count($tricks)): ?>
+		<script src="<?php echo asset('js/vendor/masonry.pkgd.min.js'); ?>"></script>
+		<script>
+$(function(){$container=$(".js-trick-container");
+$container.masonry({
+	"isOriginLeft": false,
+	gutter:0,
+	itemSelector:".trick-card",
+	columnWidth:".trick-card" ,
+	isRTL: true
+	});
+	$(".js-goto-trick a").click(function(e){e.stopPropagation()});$(".js-goto-trick").click(function(e){e.preventDefault();var t="<?php echo route('tricks.show'); ?>";var n=$(this).data("slug");window.location=t+"/"+n})})
+		</script>
+	<?php endif; ?>
+<?php $__env->stopSection(); ?>

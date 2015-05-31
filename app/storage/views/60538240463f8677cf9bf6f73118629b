@@ -1,0 +1,136 @@
+<?php $__env->startSection('title', trans('admin.viewing_category')); ?>
+
+<?php $__env->startSection('content'); ?>
+<div class="container">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="page-header">
+			  <h1><?php echo trans('admin.category_for_tricks'); ?> <span class="pull-right"> <a data-toggle="modal" href="#add_category" class="btn btn-primary btn-lg"><?php echo trans('admin.add_new_category'); ?></a></span></h1>
+			</div>
+
+			<table class="table">
+			   <thead>
+			     <tr>
+			       <th><?php echo trans('admin.title'); ?></th>
+			       <th><?php echo trans('admin.description'); ?></th>
+			       <th><?php echo trans('admin.num_of_tricks'); ?></th>
+			       <th class="col-lg-3 text-right"><?php echo trans('admin.actions'); ?></th>
+			     </tr>
+			   </thead>
+			   <tbody id="sortable">
+			  	<?php foreach($categories as $category): ?>
+			    <tr rel="<?php echo $category->id; ?>">
+			        <td><a href="<?php echo url('admin/categories/view/'.$category->id); ?>"><?php echo $category->name; ?></a></td>
+			        <td><?php echo $category->description; ?><br>
+			        </td>
+			        <td><?php echo $category->tricks->count(); ?></td>
+			        <td>
+			        	<div class="btn-group pull-right">
+				        <a class="btn btn-primary btn-sm" href="<?php echo url('admin/categories/view/'.$category->id); ?>"><?php echo trans('admin.edit'); ?></a>
+				        <a class="delete_toggler btn btn-danger btn-sm" rel="<?php echo $category->id; ?>"><?php echo trans('admin.delete'); ?></a>
+			        	</div>
+			        </td>
+			     </tr>
+			    <?php endforeach; ?>
+			    </tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<!-- Modal -->
+ <div class="modal fade" id="add_category" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+     <div class="modal-content">
+       <div class="modal-header">
+         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+         <h4 class="modal-title"><?php echo trans('admin.adding_new_category'); ?></h4>
+       </div>
+       <div class="modal-body">
+       		<?php if($errors->all()): ?>
+       		    <div class="bs-callout bs-callout-danger">
+       		        <h4><?php echo trans('admin.please_fix_errors'); ?></h4>
+       		        <?php echo HTML::ul($errors->all()); ?>
+       		    </div>
+       		<?php endif; ?>
+			<?php echo Form::open(array('class'=>'form-horizontal')); ?>
+        	<div class="form-group">
+        	    <label for="title" class="col-lg-2 control-label"><?php echo trans('admin.name'); ?></label>
+        	    <div class="col-lg-10">
+        	    	<?php echo Form::text('name',null,array('class'=>'form-control')); ?>
+        	    </div>
+        	</div>
+            <div class="form-group">
+                <label for="url" class="col-lg-2 control-label"><?php echo trans('admin.description'); ?></label>
+                <div class="col-lg-10">
+                    <?php echo Form::textarea('description',null,array('class'=>'form-control','rows'=>'4')); ?>
+                </div>
+            </div>
+        	<div class="form-group">
+        		<div class="col-lg-10 col-lg-offset-2">
+        		<?php echo Form::submit('Create',array('class'=>'btn btn-lg btn-primary btn-block'));; ?>
+        		</div>
+        	</div>
+        	<?php echo Form::close(); ?>
+       </div>
+     </div><!-- /.modal-content -->
+   </div><!-- /.modal-dialog -->
+ </div><!-- /.modal -->
+
+
+<!-- Modal -->
+ <div class="modal fade" id="delete_category" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+     <div class="modal-content">
+       <div class="modal-header">
+         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+         <h4 class="modal-title"><?php echo trans('admin.are_you_sure'); ?></h4>
+       </div>
+       <div class="modal-body">
+        	<p class="lead text-center"><?php echo trans('admin.category_will_be_deleted'); ?></p>
+       </div>
+       <div class="modal-footer">
+        	<a data-dismiss="modal" href="#delete_category" class="btn btn-default"><?php echo trans('admin.keep'); ?></a>
+        	<a href="" id="delete_link" class="btn btn-danger"><?php echo trans('admin.delete'); ?></a>
+       </div>
+     </div><!-- /.modal-content -->
+   </div><!-- /.modal-dialog -->
+ </div><!-- /.modal -->
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('scripts'); ?>
+<script type="text/javascript" src="<?php echo url('js/vendor/jquery-ui-1.10.3.custom.min.js'); ?>"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		<?php if($errors->all()): ?>
+		$('#add_category').modal('show');
+		<?php endif; ?>
+
+		$( "#sortable" ).sortable({
+		  update: function(event, ui) {
+		    var order = {};
+		    $('table tbody tr').each(function(index,elem) {
+		      order[index] = $(elem).attr('rel');
+		    });
+            console.log(order);
+		    $.ajax({
+		     type: 'POST',
+		     url: "<?php echo url('admin/categories/arrange'); ?>",
+		     data: { data: order },
+		    });
+		    }
+		});
+		// Populate the field with the right data for the modal when clicked
+		$('.delete_toggler').each(function(index,elem) {
+		    $(elem).click(function(e){
+		    	e.preventDefault();
+		    	var href = "<?php echo url('admin/categories/delete'); ?>/";
+				$('#delete_link').attr('href',href + $(elem).attr('rel'));
+				$('#delete_category').modal('show');
+		    });
+		});
+	});
+
+</script>
+
+<?php $__env->stopSection(); ?>

@@ -1,0 +1,4 @@
+<?php echo Form::open(['url'=>'search','method'=>'GET']);; ?>
+	<input type="text" name="q" class="search-box form-control" placeholder="<?php echo trans('partials.search_placeholder'); ?>" value="<?php echo e(isset($term) ? $term : ''); ?>">
+	<input style="display:none;" type="submit" value="search">
+<?php echo Form::close(); ?>

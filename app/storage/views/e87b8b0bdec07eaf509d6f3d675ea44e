@@ -1,0 +1,63 @@
+<?php $__env->startSection('title', trans('tricks.viewing_tricks')); ?>
+
+<?php $__env->startSection('content'); ?>
+<div class="container">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="page-header">
+				<h1><?php echo trans('tricks.showing_all_user_trick'); ?>  </h1>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-12">
+			<table class="table">
+			   	<thead>
+			    	<tr>
+				     	<th><?php echo trans('tricks.username'); ?></th>
+				     	<th><?php echo trans('tricks.engkey'); ?></th>
+				     	<th><?php echo trans('tricks.GENDER'); ?></th>
+						<th><?php echo trans('tricks.mobile'); ?></th>
+						<th><?php echo trans('tricks.email'); ?></th>
+						<th><?php echo trans('tricks.birthdate'); ?></th>
+						<th><?php echo trans('tricks.cv_user'); ?></th>
+						 
+			    	</tr>
+			   	</thead>
+			   	<tbody>
+			   		 
+				  	<?php foreach($results as $result): ?>
+				    <form name="myform" id="myform">
+				     <tr>
+				    	<td><?php echo $result->companyname; ?></td>
+				    	<td><?php echo $result->username; ?></td>
+				    	<td><?php echo $result->GENDER; ?></td>
+				       	<td><?php echo $result->phonenumber; ?></td>
+				       	<td><?php echo $result->email; ?></td>
+				       	<td><?php echo date("d-m-Y", strtotime($result->eng_birthdate)); ?></td>
+				       	<td>
+
+				       		<?php if (file_exists(public_path('img/CV/CV_'.$result->id))): ?>
+				       		 <a href="<?php echo URL::to('img/CV/'."CV_".$result->id); ?>" target="_blank" class="btn btn-primary">مشاهدة السيرة الذاتية </a></td>
+				       	    <?php else: ?>
+                              السيرة الذاتية غير مرفقة
+				       	    <?php endif; ?>
+				       	<td>
+				 
+
+
+                 </td>
+				     </tr></form>
+				    <?php endforeach; ?>
+
+			    </tbody>
+			</table>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="text-center"> </div>
+		</div>
+	</div>
+</div>
+<?php $__env->stopSection(); ?>

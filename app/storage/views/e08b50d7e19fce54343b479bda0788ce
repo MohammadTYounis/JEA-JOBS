@@ -1,0 +1,49 @@
+<?php $__env->startSection('title', $user->fullName); ?>
+
+<?php $__env->startSection('content'); ?>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="content-box">
+                <div class="trick-user">
+                    <div class="trick-user-image">
+                        <img src="<?php echo $user->photocss; ?>" class="user-avatar">
+                    </div>
+                    <div class="trick-user-data">
+                        <h1 class="page-title">
+                              <?php if (($user->flag_name == 0)): ?>
+                                <?php echo $user->companyname; ?>
+                               <?php else: ?>
+                                إسم الشركة غير معلن
+                                <?php endif; ?>
+                        </h1>
+                        <div class="text-muted">
+                            <b><?php echo trans('user.joined'); ?></b> <?php echo $user->created_at->diffForHumans(); ?>
+                        </div>
+                    </div>
+                </div>
+                <table>
+                    <tr>
+                        <th><?php echo trans('user.total_tricks'); ?></th>
+                        <td><?php echo count($tricks); ?></td>
+                    </tr>
+                    <tr>
+                        <th width="140"><?php echo trans('user.last_trick'); ?></th>
+                        <td><?php echo $user->lastActivity($tricks); ?></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row push-down">
+        <div class="col-lg-12">
+            <h1 class="page-title"><?php echo trans('user.submitted_tricks'); ?></h1>
+        </div>
+    </div>
+
+    <?php echo $__env->make('tricks.grid', [ 'tricks' => $tricks ], array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+</div>
+
+
+<?php $__env->stopSection(); ?>

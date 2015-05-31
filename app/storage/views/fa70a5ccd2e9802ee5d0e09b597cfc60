@@ -1,0 +1,101 @@
+<?php $__env->startSection('title', trans('admin.viewing_jobopp')); ?>
+<?php $__env->startSection('styles'); ?>
+<link href="<?php echo URL::asset('css/jquery-ui.css'); ?>" rel="stylesheet" type="text/css"/>
+<?php $__env->stopSection(); ?>
+  <?php $__env->startSection('scripts'); ?>
+ <script type="text/javascript" src="<?php echo asset('js/jquery.min.js'); ?>"></script>
+ <script src="<?php echo asset('js/jquery-ui.js'); ?>"></script>
+  <script>
+  $(document).ready(function() {
+    $("#datepicker").datepicker();
+    $("#datepicker2").datepicker();
+  });
+  </script>
+ <?php $__env->stopSection(); ?>
+			 
+<?php $__env->startSection('content'); ?>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8 col-lg-push-2 col-md-8 col-md-push-2 col-sm-12 col-xs-12">
+				<div class="content-box">
+					<h1 class="page-title">
+						<?php echo trans('admin.viewing_jobopp'); ?>
+					</h1>
+					<?php if(Session::get('errors')): ?>
+					    <div class="alert alert-danger alert-dismissable">
+					        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+					         <h5><?php echo trans('tricks.errors_while_creating'); ?></h5>
+					         <?php foreach($errors->all('<li>:message</li>') as $message): ?>
+					            <?php echo $message; ?>
+					         <?php endforeach; ?>
+					    </div>
+					<?php endif; ?>
+					<?php echo Form::open(array('class'=>'form-vertical','url'=>'admin/users/jobOppRep','role'=>'form','method'=>'get')); ?>
+					     <div class="form-group">
+					   <br>
+					    <div class="form-group">
+					    	<div class="col-lg-3"><label for="fromdate"><?php echo trans('admin.adfromdate'); ?></label>
+					    	</div>
+					    	 
+					    	<div class="col-lg-4">
+					    		 
+	<?php echo Form::input('text','fromdate', null, array('class'=>'form-control','placeholder'=>trans('admin.fromdate_placeholder'),'id' =>'datepicker','required' ));; ?>
+					    </div>
+					</div>
+					<br>
+					    <br>
+					    <div class="form-group">
+					    	<div class="col-lg-3"><label for="todate"><?php echo trans('admin.adtodate'); ?></label>
+					    	</div>
+					    	<div class="col-lg-4">
+	<?php echo Form::input('text','todate', null, array('class'=>'form-control','placeholder'=>trans('admin.todate_placeholder'),'id' =>'datepicker2','required' ));; ?>
+					    </div>
+					    </div>
+					    <br>
+					    <br>
+			
+                
+              <div class="form-group">
+					    	<div class="col-lg-3"><label for="fromdate"><?php echo trans('admin.main_spec'); ?></label>
+					    	</div>
+			<div class="col-lg-4"> <?php echo Form::select('category', $categoryList, null, array('class'=>'form-vertical','id'=>'category' ));; ?> 
+					    </div>
+					</div>
+              </div>
+
+             <br>
+             <br>
+             
+
+              <div class="form-group">
+					    	<div class="col-lg-3"><label for="fromdate"><?php echo trans('admin.company_namee'); ?></label>
+					    	</div>
+					    	<div class="col-lg-4"> 
+					    		
+					    		 <?php echo Form::select('user', $userList, null, array('class'=>'form-vertical','id'=>'user' ));; ?> 
+					   
+					    </div>
+					</div>
+              
+
+               <br>
+               <br>
+                
+              
+
+               <br>
+   	       
+			   <div class="form-group">
+					        <div class="text-right">
+					          <button type="submit"  id="save-section" class="btn btn-primary ladda-button" data-style="expand-right">
+					            <?php echo trans('admin.show_report'); ?>
+					          </button>
+					        </div>
+					    </div>
+					<?php echo Form::close(); ?>
+				</div>
+			</div>
+		</div>
+	</div>
+<?php $__env->stopSection(); ?>
+

@@ -1,0 +1,78 @@
+<?php $__env->startSection('title', trans('admin.viewing_users')); ?>
+
+<?php $__env->startSection('content'); ?>
+<div class="container">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="page-header">
+				<h1><?php echo trans('admin.showing_all_users'); ?> (<?php echo $users->getTotal(); ?>)</h1>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-12">
+			<table class="table">
+			   	<thead>
+			    	<tr>
+				     	<th><?php echo trans('admin.avatar'); ?></th>
+						<th><?php echo trans('admin.username'); ?></th>
+						<th><?php echo trans('admin.email'); ?></th>
+						<th><?php echo trans('admin.companyphone'); ?></th>
+						<th><?php echo trans('admin.tricks'); ?></th>
+						<th><?php echo trans('admin.date_registered'); ?></th>
+						<th><?php echo trans('admin.companyStatus'); ?></th>
+						<th><?php echo trans('admin.edit'); ?></th>
+			    	</tr>
+			   	</thead>
+			   	<tbody>
+			   		
+				  	<?php foreach($users as $user): ?>
+				   <?php echo Form::open(array('class'=>'form-vertical','url'=>'admin/users/list','role'=>'form','method'=>'post')); ?>
+				     <tr>
+				    	<td><img src="<?php echo $user->photocss; ?>" class="img-rounded" style="width:40px; height:40px;"></td>
+				        <td><a href="company/<?php echo $user->username; ?>" target="_blank"><?php echo $user->companyname; ?></a></td>
+				       	<td><?php echo $user->email; ?></td>
+				       	<td>
+ <?php echo Form::hidden('userid',$user->id); ?>
+ <?php echo Form::hidden('emailcompany',$user->email); ?>
+				       		<?php echo $user->phonenumber; ?></td>
+				       	<td><a href="<?php echo url($user->username); ?>" target="_blank"><?php echo count($user->tricks); ?></a></td>
+				       	<td> <?php echo date("d-m-Y", strtotime($user->created_at)); ?></td>
+				       	<td>
+				<?php if($user->active_account==1): ?>
+                فعال : <?php echo Form::radio('active_account',1,true)."  "; ?> 
+                غير فعال: <?php echo Form::radio('active_account',0)."  "; ?> 
+                 
+
+                 <?php else: ?>
+                  فعال : <?php echo Form::radio('active_account',1)."  "; ?> 
+                غير فعال : <?php echo Form::radio('active_account',0,true)."  "; ?> 
+                
+                 
+                 <?php endif; ?>
+
+
+                 </td>
+                 <td>
+
+ <div class="text-right">
+					          <button type="submit"  id="save-section" class="btn btn-primary ladda-button" data-style="expand-right">
+					            <?php echo trans('admin.edit'); ?>
+					          </button>
+					        </div>
+                 </td>
+				     </tr>
+				     <?php echo Form::close(); ?>
+				    <?php endforeach; ?>
+
+			    </tbody>
+			</table>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="text-center"><?php echo $users->links();; ?></div>
+		</div>
+	</div>
+</div>
+<?php $__env->stopSection(); ?>

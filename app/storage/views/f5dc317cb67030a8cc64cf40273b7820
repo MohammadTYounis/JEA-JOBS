@@ -1,0 +1,202 @@
+<?php $__env->startSection('title', $trick->pageTitle); ?>
+
+<?php $__env->startSection('description', $trick->pageDescription); ?>
+ 
+<?php $__env->startSection('scripts'); ?>
+
+    <script src="<?php echo url('js/vendor/highlight.pack.1.js'); ?>"></script>
+    <script type="text/javascript">
+    (function($) {
+        hljs.tabReplace = '  ';
+        hljs.initHighlightingOnLoad();
+        $('[data-toggle=tooltip]').tooltip();
+    })(jQuery);
+    </script>
+    <?php if(Auth::check()): ?>
+    <script>
+    (function(e){e(".js-like-trick").click(function(t){t.preventDefault();var n=e(this).data("liked")=="0";var r={_token:"<?php echo csrf_token(); ?>"};e.post('<?php echo route("tricks.like", $trick->slug); ?>',r,function(t){if(t!="error"){if(!n){e(".js-like-trick .fa").removeClass("text-primary");e(".js-like-trick").data("liked","0");e(".js-like-status").html("التقدم للوظيفة؟")}else{e(".js-like-trick .fa").addClass("text-primary");e(".js-like-trick").data("liked","1");e(".js-like-status").html("تقدمت للوظيفة")}e(".js-like-count").html(t+"متقدم")}})})})(jQuery)
+    </script>
+    <?php endif; ?>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
+ 
+    <div class="container" >
+        <div class="row">
+            <div class="col-lg-9 col-md-8">
+                <div class="content-box">
+                    <?php if(Auth::check() && (Auth::user()->id == $trick->user_id)): ?>
+                        <div class="text-right">
+                            <a data-toggle="modal" href="#deleteModal">حذف</a> |
+                            <a href="<?php echo $trick->editLink; ?>">تعديل</a>
+                            <?php echo $__env->make('tricks.delete',['link'=>$trick->deleteLink], array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+                        </div>
+                    <?php endif; ?>
+                    <div class="trick-user">
+                        <div class="trick-user-image">
+                            <img src="<?php echo $trick->user->photocss; ?>" class="user-avatar">
+                        </div>
+                        <div class="trick-user-data">
+                            <h1 class="page-title">
+                                <?php echo $trick->title; ?>
+                            </h1>
+                            <div>
+                                المعلن عن الوظيفة  :  -   <b><a href="<?php echo route('user.profile', $trick->user->username); ?>">
+                        <?php if(Auth::check() ): ?>
+                           <?php if ((Auth::user()->is_admin ==1)): ?>  
+                               <?php echo $trick->user->companyname; ?>
+                            <?php else: ?>
+                               <?php if(($trick->user->flag_name == 0)): ?>
+                                <?php echo $trick->user->companyname; ?>
+                               <?php else: ?>
+                                إسم الشركة غير معلن
+                                <?php endif; ?>
+                             <?php endif; ?>
+                        <?php else: ?>
+                               <?php if(($trick->user->flag_name == 0)): ?>
+                                <?php echo $trick->user->companyname; ?>
+                               <?php else: ?>
+                                إسم الشركة غير معلن
+                                <?php endif; ?>
+                         <?php endif; ?>
+                               </a></b>
+                            </div>
+                           <div > <?php
+$date = new DateTime($trick->created_at);
+ 
+?>
+                            تم الإعلان   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:-   <?php echo $date->format('Y-m-d'); ?>
+                            </div>
+                        </div>
+                    </div>
+                    <p><?php echo e($trick->description); ?></p>
+                    <pre><code class="php"><?php echo e($trick->code); ?></code></pre>
+                </div>
+            </div>
+                <div class="col-lg-3 col-md-4">
+                    <div class="content-box">
+                        <b>حالة الوظيفة</b>
+                        <ul class="list-group trick-stats">
+                            
+          <?php if(Auth::check()): ?>  
+                       <?php if(\Auth::user()->user_cat==1): ?>
+                            <a href="#" class="list-group-item js-like-trick" data-liked="<?php echo $trick->likedByUser(Auth::user()) ? '1' : '0'; ?>">
+                            <span class="fa fa-pencil <?php if($trick->likedByUser(Auth::user())): ?> text-primary <?php endif; ?>"></span>
+                                 <!--<?php if(Auth::check()): ?> -->
+                                <span class="js-like-status">
+                                    <?php if($trick->likedByUser(Auth::user())): ?>
+                                        تقدمت  للوظيفة
+                                    <?php else: ?>
+                                        التقدم للوظيفة؟
+                                    <?php endif; ?>
+                                </span>
+                                <span class="pull-right js-like-count"></span> </a>
+                                <!--<?php endif; ?> -->
+                       <?php endif; ?>
+               
+                <?php if(($trick->user_id==Auth::user()->id) || (Auth::user()->is_admin==1)): ?>
+                        <a href="<?php echo route('tricks.applyreport', $trick->slug); ?>" class="fa fa-pencil  " >  <?php echo Str::plural('عدد المتقدمين للوظيفة :', $trick->vote_cache); ?><?php echo $trick->vote_cache; ?></a>
+                <?php else: ?>
+                      
+                     <?php if(\Auth::user()->user_cat<>1): ?> 
+                        <span class="fa fa-pencil  "></span>  
+                        <?php echo Str::plural('عدد المتقدمين للوظيفة :', $trick->vote_cache); ?><?php echo $trick->vote_cache; ?>
+               
+                  <?php endif; ?>
+
+                <?php endif; ?>
+
+                            
+                          
+     <?php else: ?>
+                            &nbsp;&nbsp;&nbsp;
+                            
+ 
+                             <span class="fa fa-pencil <?php if($trick->likedByUser(Auth::user())): ?> text-primary <?php endif; ?>"></span>
+                               
+ 
+                                عدد المتقدمين للوظيفة
+                                    <?php echo $trick->vote_cache; ?>  
+                                <?php if(Auth::check()): ?></span><?php endif; ?>
+      <?php endif; ?>
+                             
+                            <li class="list-group-item">
+                                <span class="fa fa-eye"></span> <?php echo $trick->view_cache; ?> تمت المشاهدة
+                            </li>
+                        </ul>
+                        <?php if(count($trick->allCategories)): ?>
+                            <b>التخصصات الرئيسية</b>
+                            <ul class="nav nav-list push-down">
+                                <?php foreach($trick->allCategories as $category): ?>
+                                    <li>
+                                        <a href="<?php echo route('tricks.browse.category', $category->slug); ?>">
+                                            <?php echo $category->name; ?>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php endif; ?>
+                        <?php if(count($trick->tags)): ?>
+                            <b>التخصصات الفرعية</b>
+                            <ul class="nav nav-list push-down">
+                                <?php foreach($trick->tags as $tag): ?>
+                                    <li>
+                                        <a href="<?php echo route('tricks.browse.tag', $tag->slug); ?>">
+                                            <?php echo $tag->name; ?>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php endif; ?>
+                        <div class="clearfix">
+                            <?php if($prev): ?>
+                                <a  href="<?php echo route('tricks.show', $prev->slug); ?>"
+                                    title="<?php echo $prev->title; ?>" data-toggle="tooltip"
+                                    class="btn btn-sm btn-primary">
+                                        &laquo; الوظيفة السابقة
+                                </a>
+                            <?php endif; ?>
+
+                            <?php if($next): ?>
+                                <a  href="<?php echo route('tricks.show', $next->slug); ?>"
+                                    title="<?php echo $next->title; ?>" data-toggle="tooltip"
+                                    class="btn btn-sm btn-primary pull-right">
+                                        الوظيفة التالية &raquo;
+                                </a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                <div class="row">
+                    <div class="col-lg-9 col-md-8">
+                        <div id="disqus_thread"></div>
+                        <script type="text/javascript">
+                            var disqus_shortname = '<?php echo Config::get("config.disqus_shortname"); ?>';
+                            var disqus_identifier = '<?php echo $trick->id; ?>';
+
+                            (function() {
+                                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                            })();
+                        </script>
+                        <noscript>Please enable JavaScript to view the </noscript>
+                       
+                    </div>
+                </div>
+
+
+        <?php /*<div class="row">
+            <div class="col-lg-12">
+                <h2 class="title-between">Related tricks</h2>
+            </div>
+        </div>
+        <div class="row">
+            <?php for($i = 0; $i < 3; $i++): ?>
+                <?php echo $__env->make('tricks.card', [ 'test' => $i ], array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+            <?php endfor; ?>
+        </div>*/ ?>
+
+    </div>
+<?php $__env->stopSection(); ?>
